@@ -1,0 +1,6 @@
+\documentclass[pdf]{beamer}
+
+\setbeameroption{hide notes}
+
+<<child="presentation.rnw">>=
+@

@@ -1,0 +1,13 @@
+*.pdf
+*.aux
+*.log
+*.fls
+*.fdb_latexmk
+*.out
+*.nav
+*.snm
+*.toc
+*.vrb
+
+*-dedented.rnw
+*.tex

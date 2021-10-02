@@ -1,0 +1,25 @@
+<<child="theme.rnw">>=
+@
+
+%NB: Need to use [fragile] on frames with R chunks, or line breaks in printed code vanish.
+%Also on frames with # in \url.
+
+\usepackage{amsmath}
+\usepackage{siunitx}
+
+\title{Block Regularising Lotka--Volterra}
+\author{
+	Christopher Brown
+}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+	
+\end{frame}
+\note{
+	
+}
+
+\end{document}

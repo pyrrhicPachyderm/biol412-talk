@@ -1,0 +1,6 @@
+\documentclass[pdf]{beamer}
+
+\setbeameroption{show only notes}
+
+<<child="presentation.rnw">>=
+@

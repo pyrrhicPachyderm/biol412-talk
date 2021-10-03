@@ -227,8 +227,16 @@
 		\end{align*}
 	}
 \end{frame}
-\note{
-	
+\note[itemize]{
+	\item In community ecology, we look at species interactions to understand community dynamics.
+	\item We aim to model populations of interacting species over time.
+	\item The oldest models for this date back nearly 100 years, Lotka--Volterra.
+	\item Here's a graph of some populations over time, modelled by Lotka--Volterra.
+	\item And here are the parameters of the model.
+	\item If we want to run a model, and make predictions, we need to find these values experimentally.
+	\item Lotka--Volterra parameters: how species grow in isolation, and how they interact.
+	\item I'm going to be looking mostly at the interactions.
+	\item What's the problem? There are too many of them!
 }
 
 \begin{frame}{Too Many Parameters}

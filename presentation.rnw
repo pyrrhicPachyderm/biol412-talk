@@ -11,6 +11,21 @@
 	library(deSolve)
 @
 
+<<include=FALSE>>=
+	bmatrix <- function(mat) {
+		#From https://stackoverflow.com/a/54088015
+		begin <- "\\begin{bmatrix}"
+		end <- "\\end{bmatrix}"
+		line_strings <- apply(mat, 1, function(mat) {
+			paste(
+				paste(mat, collapse = "&"),
+					"\\\\"
+				)
+			})
+		paste(c(begin, line_strings, end), collapse="")
+	}
+@
+
 \title{Block Regularising Lotka--Volterra}
 \author{
 	Christopher Brown
@@ -20,7 +35,7 @@
 \begin{document}
 
 \begin{frame}[fragile]{The Lotka--Volterra Model}
-	<<echo=FALSE, fig.height=4>>=
+	<<echo=FALSE>>=
 		#Using the chaotic system from
 		#https://en.wikipedia.org/wiki/Competitive_Lotka%E2%80%93Volterra_equations#4-dimensional_example
 		
@@ -59,7 +74,15 @@
 		times <- seq(0, max_time, by=time_step)
 		
 		results <- ode(initial_population, times, derivative, params)
-		
+	@
+	\begin{align*}
+		r &= \Sexpr{bmatrix(growth_rates)} &
+		\alpha &= \Sexpr{bmatrix(competition_coefficients)} \\
+	\end{align*}
+	
+	\vspace{-2cm}
+	
+	<<echo=FALSE, fig.height=4>>=
 		plot(NULL,
 			xlim=c(min(results[,'time']),max(results[,'time'])),
 			ylim=c(0,max(results[, 2:ncol(results)])*1.1),

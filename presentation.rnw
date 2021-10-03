@@ -16,9 +16,9 @@
 		#From https://stackoverflow.com/a/54088015
 		begin <- "\\begin{bmatrix}"
 		end <- "\\end{bmatrix}"
-		line_strings <- apply(mat, 1, function(mat) {
+		line_strings <- apply(mat, 1, function(row) {
 			paste(
-				paste(mat, collapse = "&"),
+				paste(row, collapse = "&"),
 					"\\\\"
 				)
 			})

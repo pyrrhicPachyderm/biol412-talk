@@ -144,6 +144,30 @@
 		
 		paste(c(begin, content_lines, end), collapse="\n")
 	}
+	
+	block_inclusion_matrix <- function(row_groups, col_groups, inclusion_matrix, fill_threshold=0.5) {
+		#Takes row and column groupings, and an inclusion matrix, per above, and groups the inclusion matrix.
+		#Groups at least as well filed as the fill_threshold are true.
+		num_row_groups <- length(row_groups)
+		num_col_groups <- length(col_groups)
+		
+		result <- matrix(FALSE, nrow=num_row_groups, ncol=num_col_groups)
+		for(row_group_index in 1:num_row_groups) {
+			for(col_group_index in 1:num_col_groups) {
+				row_group_start <- sum(row_groups[0:(row_group_index-1)])+1
+				col_group_start <- sum(col_groups[0:(col_group_index-1)])+1
+				row_group_size <- row_groups[row_group_index]
+				col_group_size <- col_groups[col_group_index]
+				
+				sub_matrix <- inclusion_matrix[row_group_start:(row_group_start+row_group_size-1),col_group_start:(col_group_start+col_group_size-1)]
+				proportion_true <- sum(sub_matrix) / (row_group_size * col_group_size)
+				
+				result[row_group_index,col_group_index] <- (proportion_true >= fill_threshold)
+			}
+		}
+		
+		return(result)
+	}
 @
 
 <<include=FALSE>>=

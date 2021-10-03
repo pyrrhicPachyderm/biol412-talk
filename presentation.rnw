@@ -61,19 +61,18 @@
 			col_groups <- rep(1, num_species_cols)
 		}
 		
-		alignment <- function(num_cols) {
-			paste0(">{\\centering\\arraybackslash}p{\\dimexpr",num_cols,"\\colwidth+",2*(num_cols-1),"\\arraycolsep\\relax}")
+		alignment <- function(num_cols, has_rule) {
+			paste0(">{\\centering\\arraybackslash}p{\\dimexpr",num_cols,"\\colwidth+",2*(num_cols-1),"\\arraycolsep+",num_cols-has_rule,"\\arrayrulewidth\\relax}")
 		}
 		
-		begin <- paste(c("\\begin{array}{cc", rep(alignment(1), num_species_cols), "c}"), collapse="")
+		begin <- paste(c("\\begin{array}{cc", rep(alignment(1,FALSE), num_species_cols), "c}"), collapse="")
 		end <- "\\end{array}"
 		
 		get_species_column_label <- function(col_species_num) {
-			divider <- ifelse(col_species_num > 1 & is_begin_block(col_species_num, label_col_groups) & label_lines,
-				"|",
-				""
-			)
-			return(paste0("\\multicolumn{1}{",divider,alignment(1),"}{",col_species_num,"}"))
+			has_divider <- col_species_num > 1 & is_begin_block(col_species_num, label_col_groups) & label_lines
+			divider <- ifelse(has_divider, "|", "")
+			hspace <- ifelse(has_divider, "", "\\hspace{\\arrayrulewidth}") #To compensate for a shift in alignment if it has no divider.
+			return(paste0("\\multicolumn{1}{",divider,alignment(1,has_divider),"}{",hspace,col_species_num,"}"))
 		}
 		
 		species_column_labels <- sapply(1:num_species_cols, get_species_column_label)
@@ -107,11 +106,9 @@
 							paste0("\\multirow{",row_groups[row_group_index],"}*{$\\alpha_{",row_group_index,col_group_index,"}$}"),
 							""
 						)
-						divider <- ifelse(col_group_index != 1 & lines,
-							"|",
-							""
-						)
-						paste0("\\multicolumn{",col_groups[col_group_index],"}{",divider,alignment(col_groups[col_group_index]),"}{",multirow,"}")
+						has_divider <- col_group_index != 1 & lines
+						divider <- ifelse(has_divider, "|", "")
+						paste0("\\multicolumn{",col_groups[col_group_index],"}{",divider,alignment(col_groups[col_group_index],has_divider),"}{",multirow,"}")
 					}
 				)),
 				rdelim

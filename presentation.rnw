@@ -41,7 +41,7 @@
 		return(block_indices[index] != block_indices[index-1])
 	}
 	
-	block_matrix <- function(row_groups, col_groups, lines=FALSE, label_lines=lines) {
+	block_matrix <- function(row_groups, col_groups, full_interior=FALSE, lines=FALSE, label_lines=lines) {
 		#Produces the LaTeX text for a blocked interaction matrix.
 		#The groups are given as a vector of the number of species in each group.
 		
@@ -53,11 +53,19 @@
 		num_rows <- num_species_rows + 1 #One for the labels.
 		num_cols <- num_species_cols + 3 #One for the labels, one for each delimiter.
 		
+		label_row_groups <- row_groups
+		label_col_groups <- col_groups
+		
+		if(full_interior) {
+			row_groups <- rep(1, num_species_rows)
+			col_groups <- rep(1, num_species_cols)
+		}
+		
 		begin <- paste(c("\\begin{array}{", rep("c", num_cols), "}"), collapse="")
 		end <- "\\end{array}"
 		
 		get_species_column_label <- function(col_species_num) {
-			alignment <- ifelse(col_species_num > 1 & is_begin_block(col_species_num, col_groups) & label_lines,
+			alignment <- ifelse(col_species_num > 1 & is_begin_block(col_species_num, label_col_groups) & label_lines,
 				"|c",
 				"c"
 			)
@@ -82,7 +90,7 @@
 				paste0("\\cline{3-",num_species_cols+2,"}"),
 				""
 			)
-			index_cline <- ifelse(row_species_num > 1 & is_begin_block(row_species_num, row_groups) & label_lines,
+			index_cline <- ifelse(row_species_num > 1 & is_begin_block(row_species_num, label_row_groups) & label_lines,
 				paste0("\\cline{1-1}"),
 				""
 			)

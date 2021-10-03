@@ -90,29 +90,33 @@
 	
 	\vspace{-1cm}
 	
-	<<echo=FALSE, fig.height=4>>=
-		#Adjust distance of axis labels.
-		par_adjust("mgp", 1, 2.2)
-		plot(NULL,
-			xlim=c(min(results[,'time']),max(results[,'time'])),
-			ylim=c(0,max(results[, 2:ncol(results)])*1.1),
-			bty='n',
-			xaxs='i',
-			yaxs='i',
-			xlab="Time",
-			ylab="Population density")
-		
-		for (i in 2:ncol(results)) {
-			lines(results[,'time'], results[,i], lwd=2, col=i)
-		}
-	@
+	\onslide<+->{
+		<<echo=FALSE, fig.height=4>>=
+			#Adjust distance of axis labels.
+			par_adjust("mgp", 1, 2.2)
+			plot(NULL,
+				xlim=c(min(results[,'time']),max(results[,'time'])),
+				ylim=c(0,max(results[, 2:ncol(results)])*1.1),
+				bty='n',
+				xaxs='i',
+				yaxs='i',
+				xlab="Time",
+				ylab="Population density")
+			
+			for (i in 2:ncol(results)) {
+				lines(results[,'time'], results[,i], lwd=2, col=i)
+			}
+		@
+	}
 	
 	\vspace{-0.9cm}
 	
-	\begin{align*}
-		r &= \Sexpr{bmatrix(growth_rates)} &
-		\alpha &= \Sexpr{bmatrix(competition_coefficients)} \\
-	\end{align*}
+	\onslide<+->{
+		\begin{align*}
+			r &= \Sexpr{bmatrix(growth_rates)} &
+			\alpha &= \Sexpr{bmatrix(competition_coefficients)} \\
+		\end{align*}
+	}
 \end{frame}
 \note{
 	

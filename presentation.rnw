@@ -328,7 +328,7 @@
 		\item<+-> Find best grouping algorithm
 		\item<+-> Find groups using incomplete data
 		\begin{itemize}
-			\item Do fewer experiments.
+			\item Do fewer experiments
 		\end{itemize}
 	\end{enumerate}
 \end{frame}

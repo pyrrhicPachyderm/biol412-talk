@@ -29,7 +29,7 @@
 @
 
 <<include=FALSE>>=
-	block_matrix <- function(row_groups, col_groups, lines=FALSE) {
+	block_matrix <- function(row_groups, col_groups, lines=FALSE, label_lines=lines) {
 		#Produces the LaTeX text for a blocked interaction matrix.
 		#The groups are given as a vector of the number of species in each group.
 		
@@ -44,7 +44,35 @@
 		begin <- paste(c("\\begin{array}{", rep("c", num_cols), "}"), collapse="")
 		end <- "\\end{array}"
 		
-		label_line <- paste(c("","",1:num_species_cols,""), collapse="&")
+		get_species_column_label <- function(col_species_num, col_group_index) {
+			#Set col_group_index = 0 if this is not the first line of a col_group.
+			alignment <- ifelse(col_group_index > 1 & label_lines,
+				"|c",
+				"c"
+			)
+			return(paste0("\\multicolumn{1}{",alignment,"}{",col_species_num,"}"))
+		}
+		
+		get_species_column_group_label <- function(col_species_num, col_group_index) {
+			first_label <- get_species_column_label(col_species_num, col_group_index)
+			col_group_size <- col_groups[col_group_index]
+			if(col_group_size == 1) {
+				return(first_label)
+			} else {
+				return(c(
+					first_label,
+					sapply((col_species_num+1):(col_species_num+col_group_size-1), get_species_column_label, 0)
+				))
+			}
+		}
+		
+		species_column_labels <- unlist(sapply(1:length(col_groups),
+			function(col_group_index) {
+				get_species_column_group_label(sum(col_groups[0:(col_group_index-1)])+1, col_group_index)
+			}
+		))
+		
+		label_line <- paste(c("","",species_column_labels,""), collapse="&")
 		
 		get_row_group_filler <- function(row_species_num) {
 			paste(c(row_species_num,rep("",num_cols-1)),collapse="&")
@@ -62,6 +90,10 @@
 			)
 			cline <- ifelse(row_species_num != 1 & row_group_index != 0 & lines,
 				paste0("\\cline{3-",num_species_cols+2,"}"),
+				""
+			)
+			index_cline <- ifelse(row_species_num != 1 & row_group_index != 0 & label_lines,
+				paste0("\\cline{1-1}"),
 				""
 			)
 			row_line <- paste(c(
@@ -82,7 +114,7 @@
 				)),
 				rdelim
 			), collapse="&")
-			return(paste0(cline,row_line))
+			return(paste0(index_cline,cline,row_line))
 		}
 		
 		get_row_group_lines <- function(row_species_num, row_group_index) {

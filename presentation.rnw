@@ -6,6 +6,8 @@
 
 \usepackage{amsmath}
 \usepackage{siunitx}
+\usepackage{multirow}
+\usepackage{bigdelim}
 
 <<include=FALSE>>=
 	library(deSolve)
@@ -23,6 +25,74 @@
 				)
 			})
 		paste(c(begin, line_strings, end), collapse="")
+	}
+@
+
+<<include=FALSE>>=
+	block_matrix <- function(row_groups, col_groups) {
+		#Produces the LaTeX text for a blocked interaction matrix.
+		#The groups are given as a vector of the number of species in each group.
+		
+		delim_width <- "2mm"
+		
+		num_species_rows <- sum(row_groups)
+		num_species_cols <- sum(col_groups)
+		
+		num_rows <- num_species_rows + 1 #One for the labels.
+		num_cols <- num_species_cols + 3 #One for the labels, one for each delimiter.
+		
+		begin <- paste(c("\\begin{array}{", rep("c", num_cols), "}"), collapse="")
+		end <- "\\end{array}"
+		
+		label_line <- paste(c("","",1:num_species_cols,""), collapse="&")
+		
+		get_row_group_filler <- function(row_species_num) {
+			paste(c(row_species_num,rep("",num_cols-1)),collapse="&")
+		}
+		
+		get_row_group_line <- function(row_species_num, row_group_index) {
+			ldelim <- ifelse(row_species_num == 1,
+				paste0("\\ldelim[{",num_species_rows,"}{",delim_width,"}"),
+				""
+			)
+			rdelim <- ifelse(row_species_num == 1,
+				paste0("\\rdelim]{",num_species_rows,"}{",delim_width,"}"),
+				""
+			)
+			return(paste(c(
+				row_species_num,
+				ldelim,
+				unlist(sapply(1:length(col_groups),
+					function(col_group_index) {
+						paste0("\\multicolumn{",col_groups[col_group_index],"}{c}{\\multirow{",row_groups[row_group_index],"}*{$\\alpha_{",row_group_index,col_group_index,"}$}}")
+					}
+				)),
+				rdelim
+			), collapse="&"))
+		}
+		
+		get_row_group_lines <- function(row_species_num, row_group_index) {
+			first_line <- get_row_group_line(row_species_num, row_group_index)
+			row_group_size <- row_groups[row_group_index]
+			if(row_group_size == 1) {
+				return(first_line)
+			} else {
+				return(c(
+					first_line,
+					sapply((row_species_num+1):(row_species_num+row_group_size-1), get_row_group_filler)
+				))
+			}
+		}
+		
+		species_lines <- unlist(sapply(1:length(row_groups),
+			function(row_group_index) {
+				get_row_group_lines(sum(row_groups[0:(row_group_index-1)])+1, row_group_index)
+			}
+		))
+		
+		content_lines <- paste(c(label_line,species_lines), c("\\\\"), sep="", collapse="\n")
+		
+		paste(c(begin, content_lines, end), collapse="\n")
 	}
 @
 

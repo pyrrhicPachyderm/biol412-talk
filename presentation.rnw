@@ -6,6 +6,7 @@
 
 \usepackage{amsmath}
 \usepackage{siunitx}
+\usepackage{array}
 \usepackage{multirow}
 \usepackage{bigdelim}
 
@@ -28,6 +29,8 @@
 	}
 @
 
+\newlength{\colwidth}
+\settowidth{\colwidth}{$\alpha_{99}$}
 <<include=FALSE>>=
 	#First, define a pair of helper functions, that take a list of block sizes and an index, and return helpful info.
 	block_index <- function(index, block_sizes) {
@@ -58,9 +61,11 @@
 			col_groups <- rep(1, num_species_cols)
 		}
 		
-		alignment <- "c"
+		alignment <- function(num_cols) {
+			paste0(">{\\centering\\arraybackslash}p{\\dimexpr",num_cols,"\\colwidth+",2*(num_cols-1),"\\arraycolsep\\relax}")
+		}
 		
-		begin <- paste(c("\\begin{array}{cc", rep(alignment, num_species_cols), "c}"), collapse="")
+		begin <- paste(c("\\begin{array}{cc", rep(alignment(1), num_species_cols), "c}"), collapse="")
 		end <- "\\end{array}"
 		
 		get_species_column_label <- function(col_species_num) {
@@ -68,7 +73,7 @@
 				"|",
 				""
 			)
-			return(paste0("\\multicolumn{1}{",divider,alignment,"}{",col_species_num,"}"))
+			return(paste0("\\multicolumn{1}{",divider,alignment(1),"}{",col_species_num,"}"))
 		}
 		
 		species_column_labels <- sapply(1:num_species_cols, get_species_column_label)
@@ -106,7 +111,7 @@
 							"|",
 							""
 						)
-						paste0("\\multicolumn{",col_groups[col_group_index],"}{",divider,alignment,"}{",multirow,"}")
+						paste0("\\multicolumn{",col_groups[col_group_index],"}{",divider,alignment(col_groups[col_group_index]),"}{",multirow,"}")
 					}
 				)),
 				rdelim

@@ -74,10 +74,6 @@
 		
 		label_line <- paste(c("","",species_column_labels,""), collapse="&")
 		
-		get_row_group_filler <- function(row_species_num) {
-			paste(c(row_species_num,rep("",num_cols-1)),collapse="&")
-		}
-		
 		get_row_line <- function(row_species_num, row_group_index) {
 			#Set row_group_index = 0 if this is not the first line of a row_group.
 			ldelim <- ifelse(row_species_num == 1,

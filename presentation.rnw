@@ -9,6 +9,7 @@
 \usepackage{array}
 \usepackage{multirow}
 \usepackage{bigdelim}
+\usepackage{arydshln}
 
 <<include=FALSE>>=
 	library(deSolve)
@@ -28,6 +29,8 @@
 		paste(c(begin, line_strings, end), collapse="")
 	}
 @
+
+\arrayrulecolor{black!35}
 
 \newlength{\colwidth}
 \settowidth{\colwidth}{$\alpha_{99}$}
@@ -49,6 +52,8 @@
 		#The groups are given as a vector of the number of species in each group.
 		
 		delim_width <- "2mm"
+		use_dashed_lines <- TRUE
+		dashed_line_spec <- "1pt/1pt" #Dash/gap.
 		
 		num_species_rows <- sum(row_groups)
 		num_species_cols <- sum(col_groups)
@@ -65,12 +70,18 @@
 			paste0(">{\\centering\\arraybackslash}p{\\dimexpr",num_cols,"\\colwidth+",2*(num_cols-1),"\\arraycolsep+",num_cols-has_rule,"\\arrayrulewidth\\relax}")
 		}
 		
+		divider_command <- ifelse(use_dashed_lines, paste0(";{",dashed_line_spec,"}"), "|")
+		cline_command <- ifelse(use_dashed_lines,
+			function(col1,col2){paste0("\\cdashline{",col1,"-",col2,"}[",dashed_line_spec,"]")},
+			function(col1,col2){paste0("\\cline{",col1,"-",col2,"}")}
+		)
+		
 		begin <- paste(c("\\begin{array}{cc", rep(alignment(1,FALSE), num_species_cols), "c}"), collapse="")
 		end <- "\\end{array}"
 		
 		get_species_column_label <- function(col_species_num) {
 			has_divider <- col_species_num > 1 & is_begin_block(col_species_num, label_col_groups) & label_lines
-			divider <- ifelse(has_divider, "|", "")
+			divider <- ifelse(has_divider, divider_command, "")
 			hspace <- ifelse(has_divider, "", "\\hspace{\\arrayrulewidth}") #To compensate for a shift in alignment if it has no divider.
 			return(paste0("\\multicolumn{1}{",divider,alignment(1,has_divider),"}{",hspace,col_species_num,"}"))
 		}
@@ -90,11 +101,11 @@
 				""
 			)
 			cline <- ifelse(row_species_num > 1 & is_begin_block(row_species_num, row_groups) & lines,
-				paste0("\\cline{3-",num_species_cols+2,"}"),
+				cline_command(3,num_species_cols+2),
 				""
 			)
 			index_cline <- ifelse(row_species_num > 1 & is_begin_block(row_species_num, label_row_groups) & label_lines,
-				paste0("\\cline{1-1}"),
+				cline_command(1,1),
 				""
 			)
 			row_line <- paste(c(
@@ -107,7 +118,7 @@
 							""
 						)
 						has_divider <- col_group_index != 1 & lines
-						divider <- ifelse(has_divider, "|", "")
+						divider <- ifelse(has_divider, divider_command, "")
 						paste0("\\multicolumn{",col_groups[col_group_index],"}{",divider,alignment(col_groups[col_group_index],has_divider),"}{",multirow,"}")
 					}
 				)),

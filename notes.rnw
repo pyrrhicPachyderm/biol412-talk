@@ -1,4 +1,4 @@
-\documentclass[pdf]{beamer}
+\documentclass[pdf,table]{beamer}
 
 \setbeameroption{show only notes}
 

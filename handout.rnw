@@ -1,4 +1,4 @@
-\documentclass[pdf,handout]{beamer}
+\documentclass[pdf,table,handout]{beamer}
 
 \setbeameroption{show notes on second screen}
 

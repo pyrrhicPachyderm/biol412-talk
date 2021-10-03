@@ -26,6 +26,18 @@
 	}
 @
 
+<<include=FALSE>>=
+	par_adjust <- function(variable, index, value) {
+		#The nature of par makes it hard to set just one value in a vector.
+		#This sets the indexth value in variable to value.
+		v <- par(variable)
+		v[index] <- value
+		l <- list(v)
+		names(l) <- variable
+		par(l)
+	}
+@
+
 \title{Block Regularising Lotka--Volterra}
 \author{
 	Christopher Brown
@@ -83,6 +95,8 @@
 	\vspace{-2cm}
 	
 	<<echo=FALSE, fig.height=4>>=
+		#Adjust distance of axis labels.
+		par_adjust("mgp", 1, 2.2)
 		plot(NULL,
 			xlim=c(min(results[,'time']),max(results[,'time'])),
 			ylim=c(0,max(results[, 2:ncol(results)])*1.1),

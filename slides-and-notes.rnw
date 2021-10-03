@@ -1,0 +1,6 @@
+\documentclass[pdf,table]{beamer}
+
+\setbeameroption{show notes on second screen}
+
+<<child="presentation.rnw">>=
+@

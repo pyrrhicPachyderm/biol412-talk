@@ -19,7 +19,7 @@
 
 \begin{document}
 
-\begin{frame}[fragile]
+\begin{frame}[fragile]{The Lotka--Volterra Model}
 	<<echo=FALSE, fig.height=4>>=
 		#Using the chaotic system from
 		#https://en.wikipedia.org/wiki/Competitive_Lotka%E2%80%93Volterra_equations#4-dimensional_example

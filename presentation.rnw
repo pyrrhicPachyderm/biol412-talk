@@ -231,4 +231,48 @@
 	
 }
 
+\begin{frame}{Too Many Parameters}
+	\only<+>{
+		\begin{align*}
+			\Sexpr{block_matrix(rep(1,8),rep(1,8),full_interior=T,label_lines=T)}
+		\end{align*}
+	}
+	
+	\only<+>{
+		\begin{align*}
+			\Sexpr{block_matrix(rep(1,8),c(2,1,1,1,1,1,1),full_interior=T,label_lines=T)}
+		\end{align*}
+	}
+	
+	\only<+>{
+		\begin{align*}
+			\Sexpr{block_matrix(rep(1,8),c(2,1,1,1,1,1,1),label_lines=T)}
+		\end{align*}
+	}
+	
+	\only<+>{
+		\begin{align*}
+			\Sexpr{block_matrix(c(2,1,1,1,1,1,1),c(2,1,1,1,1,1,1),label_lines=T)}
+		\end{align*}
+	}
+	
+	\only<+>{
+		\begin{align*}
+			\Sexpr{block_matrix(c(2,3,2,1),c(2,2,2,2),lines=T)}
+		\end{align*}
+	}
+\end{frame}
+\note[itemize]{
+	\item A row is a species' competitive response.
+	\item A column is a species' competitive effect.
+	\item Too many parameters; need at least one experiment per parameter.
+	\item Suppose two species have a similar competitive effect.
+	\item We can give them the same set of parameters.
+	\item Suppose they have the same response to competition as well.
+	\item We can combine their parameters in that way too.
+	\item We can go through the whole thing, blocking species up appropriately.
+	\item One quarter the number of experiments.
+	\item Note that the last species is still considered special in its response to competition; this is valid.
+}
+
 \end{document}

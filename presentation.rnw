@@ -289,5 +289,13 @@
 		\end{itemize}
 	\end{enumerate}
 \end{frame}
+\note[itemize]{
+	\item Use other people's data.
+	\item Fit grouped models, find which grouping is best.
+	\item Can this be predicted with phylogeny, traits?
+	\item Trying every grouping is slow; find a faster way to do it.
+	\item To provide a practical application, we need to find groups using incomplete data.
+	\item This will save on future experiments.
+}
 
 \end{document}

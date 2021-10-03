@@ -50,6 +50,7 @@
 	block_matrix <- function(row_groups, col_groups, full_interior=FALSE, lines=FALSE, label_lines=lines) {
 		#Produces the LaTeX text for a blocked interaction matrix.
 		#The groups are given as a vector of the number of species in each group.
+		#With full_interior, it blocks only the labels, and leaves the full set of alpha values in the interior.
 		
 		delim_width <- "2mm"
 		use_dashed_lines <- TRUE

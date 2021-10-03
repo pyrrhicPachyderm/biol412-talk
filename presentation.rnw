@@ -87,12 +87,8 @@
 		
 		results <- ode(initial_population, times, derivative, params)
 	@
-	\begin{align*}
-		r &= \Sexpr{bmatrix(growth_rates)} &
-		\alpha &= \Sexpr{bmatrix(competition_coefficients)} \\
-	\end{align*}
 	
-	\vspace{-2cm}
+	\vspace{-1cm}
 	
 	<<echo=FALSE, fig.height=4>>=
 		#Adjust distance of axis labels.
@@ -110,6 +106,13 @@
 			lines(results[,'time'], results[,i], lwd=2, col=i)
 		}
 	@
+	
+	\vspace{-0.9cm}
+	
+	\begin{align*}
+		r &= \Sexpr{bmatrix(growth_rates)} &
+		\alpha &= \Sexpr{bmatrix(competition_coefficients)} \\
+	\end{align*}
 \end{frame}
 \note{
 	

@@ -50,9 +50,6 @@
 		num_species_rows <- sum(row_groups)
 		num_species_cols <- sum(col_groups)
 		
-		num_rows <- num_species_rows + 1 #One for the labels.
-		num_cols <- num_species_cols + 3 #One for the labels, one for each delimiter.
-		
 		label_row_groups <- row_groups
 		label_col_groups <- col_groups
 		
@@ -61,15 +58,17 @@
 			col_groups <- rep(1, num_species_cols)
 		}
 		
-		begin <- paste(c("\\begin{array}{", rep("c", num_cols), "}"), collapse="")
+		alignment <- "c"
+		
+		begin <- paste(c("\\begin{array}{cc", rep(alignment, num_species_cols), "c}"), collapse="")
 		end <- "\\end{array}"
 		
 		get_species_column_label <- function(col_species_num) {
-			alignment <- ifelse(col_species_num > 1 & is_begin_block(col_species_num, label_col_groups) & label_lines,
-				"|c",
-				"c"
+			divider <- ifelse(col_species_num > 1 & is_begin_block(col_species_num, label_col_groups) & label_lines,
+				"|",
+				""
 			)
-			return(paste0("\\multicolumn{1}{",alignment,"}{",col_species_num,"}"))
+			return(paste0("\\multicolumn{1}{",divider,alignment,"}{",col_species_num,"}"))
 		}
 		
 		species_column_labels <- sapply(1:num_species_cols, get_species_column_label)
@@ -103,11 +102,11 @@
 							paste0("\\multirow{",row_groups[row_group_index],"}*{$\\alpha_{",row_group_index,col_group_index,"}$}"),
 							""
 						)
-						alignment <- ifelse(col_group_index != 1 & lines,
-							"|c",
-							"c"
+						divider <- ifelse(col_group_index != 1 & lines,
+							"|",
+							""
 						)
-						paste0("\\multicolumn{",col_groups[col_group_index],"}{",alignment,"}{",multirow,"}")
+						paste0("\\multicolumn{",col_groups[col_group_index],"}{",divider,alignment,"}{",multirow,"}")
 					}
 				)),
 				rdelim

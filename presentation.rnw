@@ -317,4 +317,23 @@
 	\item This will save on future experiments.
 }
 
+\begin{frame}{Incomplete Data}
+	
+\end{frame}
+\note[itemize]{
+	\item The ultimate goal, all going well, is to write an R package.
+	\item It'll take an incomplete set of data.
+	\begin{itemize}
+		\item Prior studies of the system.
+		\item Phylogenetic, trait data.
+		\item The first half of your experiments.
+	\end{itemize}
+	\item It'll group things that it can.
+	\item Say which experiments still need doing.
+	\item And only fewer experiments need doing.
+	\item All in hopefully, hopefully a lot of work saved.
+	\item And the whole system characterised, allowing predictions.
+	\item Return to first slide, to show graph again.
+}
+
 \end{document}

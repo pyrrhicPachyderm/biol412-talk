@@ -47,10 +47,12 @@
 		return(block_indices[index] != block_indices[index-1])
 	}
 	
-	block_matrix <- function(row_groups, col_groups, full_interior=FALSE, lines=FALSE, label_lines=lines) {
+	block_matrix <- function(row_groups, col_groups, full_interior=FALSE, inclusion_matrix=NULL, lines=FALSE, label_lines=lines) {
 		#Produces the LaTeX text for a blocked interaction matrix.
 		#The groups are given as a vector of the number of species in each group.
 		#With full_interior, it blocks only the labels, and leaves the full set of alpha values in the interior.
+		#include_matrix is a matrix, with size equal to the number of groups in each direction, and boolean values as to whether or not they should have alpha values.
+		#If include_matrix is NULL, as by default, everything is included.
 		
 		delim_width <- "2mm"
 		use_dashed_lines <- TRUE
@@ -65,6 +67,10 @@
 		if(full_interior) {
 			row_groups <- rep(1, num_species_rows)
 			col_groups <- rep(1, num_species_cols)
+		}
+		
+		if(is.null(inclusion_matrix)) {
+			inclusion_matrix <- matrix(TRUE, nrow=length(row_groups), ncol=sum(col_groups))
 		}
 		
 		alignment <- function(num_cols, has_rule) {
@@ -114,8 +120,12 @@
 				ldelim,
 				unlist(sapply(1:length(col_groups),
 					function(col_group_index) {
+						alpha_value <- ifelse(inclusion_matrix[row_group_index,col_group_index],
+							paste0("$\\alpha_{",row_group_index,col_group_index,"}$"),
+							""
+						)
 						multirow <- ifelse(is_begin_block(row_species_num, row_groups),
-							paste0("\\multirow{",row_groups[row_group_index],"}*{$\\alpha_{",row_group_index,col_group_index,"}$}"),
+							paste0("\\multirow{",row_groups[row_group_index],"}*{",alpha_value,"}"),
 							""
 						)
 						has_divider <- col_group_index != 1 & lines

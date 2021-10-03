@@ -7,6 +7,10 @@
 \usepackage{amsmath}
 \usepackage{siunitx}
 
+<<include=FALSE>>=
+	library(deSolve)
+@
+
 \title{Block Regularising Lotka--Volterra}
 \author{
 	Christopher Brown
@@ -15,8 +19,60 @@
 
 \begin{document}
 
-\begin{frame}
-	
+\begin{frame}[fragile]
+	<<echo=FALSE, fig.height=4>>=
+		#Using the chaotic system from
+		#https://en.wikipedia.org/wiki/Competitive_Lotka%E2%80%93Volterra_equations#4-dimensional_example
+		
+		num_species <- 4
+		
+		#These is the equilibrium, plus a perturbation.
+		initial_population <- c(
+			0.3013, 0.4586, 0.1307, 0.3557
+		) + 0.1
+		
+		growth_rates <- matrix(c(
+			1, 0.72, 1.53, 1.27
+		), nrow=num_species, ncol=1, byrow=T)
+		
+		competition_coefficients <- matrix(c(
+			1, 1.09, 1.52, 0,
+			0, 1, 0.44, 1.36,
+			2.33, 0, 1, 0.47,
+			1.21, 0.51, 0.35, 1
+		), nrow=num_species, ncol=num_species, byrow=T)
+		
+		params <- list(
+			growth_rates = growth_rates,
+			competition_coefficients = competition_coefficients
+		)
+		
+		derivative <- function(t, y, params) {
+			y <- matrix(y, ncol=1)
+			d <- y * params$growth_rates *
+				(1 - params$competition_coefficients %*% y)
+			return(list(as.vector(d)))
+		}
+		
+		max_time <- 200
+		time_step <- 0.1
+		times <- seq(0, max_time, by=time_step)
+		
+		results <- ode(initial_population, times, derivative, params)
+		
+		plot(NULL,
+			xlim=c(min(results[,'time']),max(results[,'time'])),
+			ylim=c(0,max(results[, 2:ncol(results)])*1.1),
+			bty='n',
+			xaxs='i',
+			yaxs='i',
+			xlab="Time",
+			ylab="Population density")
+		
+		for (i in 2:ncol(results)) {
+			lines(results[,'time'], results[,i], lwd=2, col=i)
+		}
+	@
 \end{frame}
 \note{
 	

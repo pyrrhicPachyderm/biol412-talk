@@ -29,7 +29,7 @@
 @
 
 <<include=FALSE>>=
-	block_matrix <- function(row_groups, col_groups) {
+	block_matrix <- function(row_groups, col_groups, lines=FALSE) {
 		#Produces the LaTeX text for a blocked interaction matrix.
 		#The groups are given as a vector of the number of species in each group.
 		
@@ -50,7 +50,8 @@
 			paste(c(row_species_num,rep("",num_cols-1)),collapse="&")
 		}
 		
-		get_row_group_line <- function(row_species_num, row_group_index) {
+		get_row_line <- function(row_species_num, row_group_index) {
+			#Set row_group_index = 0 if this is not the first line of a row_group.
 			ldelim <- ifelse(row_species_num == 1,
 				paste0("\\ldelim[{",num_species_rows,"}{",delim_width,"}"),
 				""
@@ -59,27 +60,40 @@
 				paste0("\\rdelim]{",num_species_rows,"}{",delim_width,"}"),
 				""
 			)
-			return(paste(c(
+			cline <- ifelse(row_species_num != 1 & row_group_index != 0 & lines,
+				paste0("\\cline{3-",num_species_cols+2,"}"),
+				""
+			)
+			row_line <- paste(c(
 				row_species_num,
 				ldelim,
 				unlist(sapply(1:length(col_groups),
 					function(col_group_index) {
-						paste0("\\multicolumn{",col_groups[col_group_index],"}{c}{\\multirow{",row_groups[row_group_index],"}*{$\\alpha_{",row_group_index,col_group_index,"}$}}")
+						multirow <- ifelse(row_group_index != 0,
+							paste0("\\multirow{",row_groups[row_group_index],"}*{$\\alpha_{",row_group_index,col_group_index,"}$}"),
+							""
+						)
+						alignment <- ifelse(col_group_index != 1 & lines,
+							"|c",
+							"c"
+						)
+						paste0("\\multicolumn{",col_groups[col_group_index],"}{",alignment,"}{",multirow,"}")
 					}
 				)),
 				rdelim
-			), collapse="&"))
+			), collapse="&")
+			return(paste0(cline,row_line))
 		}
 		
 		get_row_group_lines <- function(row_species_num, row_group_index) {
-			first_line <- get_row_group_line(row_species_num, row_group_index)
+			first_line <- get_row_line(row_species_num, row_group_index)
 			row_group_size <- row_groups[row_group_index]
 			if(row_group_size == 1) {
 				return(first_line)
 			} else {
 				return(c(
 					first_line,
-					sapply((row_species_num+1):(row_species_num+row_group_size-1), get_row_group_filler)
+					sapply((row_species_num+1):(row_species_num+row_group_size-1), get_row_line, 0)
 				))
 			}
 		}

@@ -33,7 +33,7 @@
 \arrayrulecolor{black!35}
 
 \newlength{\colwidth}
-\settowidth{\colwidth}{$\alpha_{99}$}
+\settowidth{\colwidth}{$\alpha_{mm}$}
 <<include=FALSE>>=
 	#First, define a pair of helper functions, that take a list of block sizes and an index, and return helpful info.
 	block_index <- function(index, block_sizes) {
@@ -47,7 +47,7 @@
 		return(block_indices[index] != block_indices[index-1])
 	}
 	
-	block_matrix <- function(row_groups, col_groups, full_interior=FALSE, inclusion_matrix=NULL, lines=FALSE, label_lines=lines) {
+	block_matrix <- function(row_groups, col_groups, full_interior=FALSE, inclusion_matrix=NULL, lines=FALSE, label_lines=lines, alphabetic=FALSE) {
 		#Produces the LaTeX text for a blocked interaction matrix.
 		#The groups are given as a vector of the number of species in each group.
 		#With full_interior, it blocks only the labels, and leaves the full set of alpha values in the interior.
@@ -57,6 +57,7 @@
 		delim_width <- "2mm"
 		use_dashed_lines <- TRUE
 		dashed_line_spec <- "1pt/1pt" #Dash/gap.
+		is_alphabetic_capital <- FALSE
 		
 		num_species_rows <- sum(row_groups)
 		num_species_cols <- sum(col_groups)
@@ -97,6 +98,18 @@
 		
 		label_line <- paste(c("","",species_column_labels,""), collapse="&")
 		
+		get_alpha_subscript <- function(group_index) {
+			if(alphabetic) {
+				if(is_alphabetic_capital) {
+					return(LETTERS[group_index])
+				} else {
+					return(letters[group_index])
+				}
+			} else {
+				return(as.character(group_index))
+			}
+		}
+		
 		get_row_line <- function(row_species_num) {
 			row_group_index <- block_index(row_species_num, row_groups)
 			ldelim <- ifelse(row_species_num == 1,
@@ -121,7 +134,7 @@
 				unlist(sapply(1:length(col_groups),
 					function(col_group_index) {
 						alpha_value <- ifelse(inclusion_matrix[row_group_index,col_group_index],
-							paste0("$\\alpha_{",row_group_index,col_group_index,"}$"),
+							paste0("$\\alpha_{",get_alpha_subscript(row_group_index),get_alpha_subscript(col_group_index),"}$"),
 							""
 						)
 						multirow <- ifelse(is_begin_block(row_species_num, row_groups),

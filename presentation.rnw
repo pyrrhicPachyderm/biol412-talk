@@ -33,7 +33,7 @@
 \arrayrulecolor{black!35}
 
 \newlength{\colwidth}
-\settowidth{\colwidth}{$\alpha_{mm}$}
+\settowidth{\colwidth}{$\alpha_{mm}$} %m is the widest letter.
 <<include=FALSE>>=
 	#First, define a pair of helper functions, that take a list of block sizes and an index, and return helpful info.
 	block_index <- function(index, block_sizes) {
